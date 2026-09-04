@@ -1,0 +1,54 @@
+{
+  "malicious": [
+    {
+      "label": "USDT unlimited approval to EOA 0x63c79fcc…",
+      "chainId": 1,
+      "hash": "0xd838ca5a4ef6dd9591d0e1d891410ef877290fb8391b5c293fe0ecf556fac40d",
+      "expect": "block",
+      "spender": "0x63c79fccd0a21e4a4d87056a0efe3b85d8c373d4",
+      "amount": "115792089237316195423570985008687907853269984665640564039457584007913129639935"
+    },
+    {
+      "label": "USDT unlimited approval to EOA 0x63c79fcc…",
+      "chainId": 1,
+      "hash": "0x36ff2a8120d3a1ddd1ce0a0f289d46ce4e99ec03c9ba8ceaea827dfac7fdee59",
+      "expect": "block",
+      "spender": "0x63c79fccd0a21e4a4d87056a0efe3b85d8c373d4",
+      "amount": "115792089237316195423570985008687907853269984665640564039457584007913129639935"
+    },
+    {
+      "label": "USDT unlimited approval to EOA 0x63c79fcc…",
+      "chainId": 1,
+      "hash": "0x596d049013ba18c5825e75bdcfbb236f0b8d65f330b76df47a09e6334770b01b",
+      "expect": "block",
+      "spender": "0x63c79fccd0a21e4a4d87056a0efe3b85d8c373d4",
+      "amount": "115792089237316195423570985008687907853269984665640564039457584007913129639935"
+    },
+    {
+      "label": "USDT unlimited approval to EOA 0x10e8aaad…",
+      "chainId": 1,
+      "hash": "0x68c9c3ef2b9fe5f944135cc834aef3c7a986f35d9ea971d2242abe5270f7a4f3",
+      "expect": "block",
+      "spender": "0x10e8aaad3662a28de35203ef0292f7f0dc18e57e",
+      "amount": "115792089237316195423570985008687907853269984665640564039448360635876274864128"
+    },
+    {
+      "label": "USDT unlimited approval to EOA 0x00c95e06…",
+      "chainId": 1,
+      "hash": "0x6281a35a4111a8d7640316af36b64bce3ea7fc37b55c2bd8c4af35021116be85",
+      "expect": "block",
+      "spender": "0x00c95e060010e0bf341159fae9fbf3fa81d2bfa6",
+      "amount": "115792089237316195423570985008687907853269984665640564039457584007913129639935"
+    }
+  ],
+  "benign": [
+    {
+      "label": "USDT approval to router 0x11111112…",
+      "chainId": 1,
+      "hash": "0xf13493d2b6a8174a6d8af4e497b792b4fdfed243b9deb5f06fbda4748dcde372",
+      "expect": "clear",
+      "spender": "0x1111111254eeb25477b68fb85ed929f73a960582",
+      "amount": "115792089237316195423570985008687907853269984665640564039457584007913129639935"
+    }
+  ]
+}

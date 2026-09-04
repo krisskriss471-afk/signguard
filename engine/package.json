@@ -1,0 +1,21 @@
+{
+  "name": "signguard-engine",
+  "version": "0.1.0",
+  "description": "Pre-sign EVM transaction risk scanner — live on-chain context, no mocks.",
+  "type": "module",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc -p .",
+    "test": "vitest run",
+    "scan": "tsx src/cli.ts"
+  },
+  "dependencies": {
+    "viem": "^2.21.0"
+  },
+  "devDependencies": {
+    "@types/node": "^26.4.1",
+    "tsx": "^4.19.0",
+    "typescript": "^5.6.0",
+    "vitest": "^2.1.0"
+  }
+}
