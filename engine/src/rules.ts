@@ -239,7 +239,7 @@ export function ruleLookalikeName(ctx: TxContext): Finding | null {
 export function score(findings: Finding[]): number {
   let s = 0;
   for (const f of findings) {
-    s = Math.max(s, [10, 30, 60, 90][f.severity]);
+    s = Math.max(s, [5, 20, 60, 90][f.severity]);
     if (f.severity >= 2) s += 5;
   }
   return Math.min(100, s);

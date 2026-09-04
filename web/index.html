@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>SignGuard — pre-sign transaction risk verdict</title>
+<style>
+  :root{--bg:#0b0e14;--card:#141926;--fg:#e6e9f0;--mut:#8b93a7;--ok:#2ecc71;--warn:#f1c40f;--bad:#e74c3c;--acc:#5b8cff}
+  *{box-sizing:border-box}
+  body{margin:0;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;background:var(--bg);color:var(--fg)}
+  header{padding:20px 28px;border-bottom:1px solid #1f2637;display:flex;align-items:center;gap:12px}
+  .logo{width:26px;height:26px;border-radius:8px;background:linear-gradient(135deg,var(--acc),#9b5bff)}
+  h1{font-size:17px;margin:0} small{color:var(--mut);font-weight:400}
+  main{max-width:980px;margin:0 auto;padding:26px}
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+  @media(max-width:820px){.grid{grid-template-columns:1fr}}
+  .card{background:var(--card);border:1px solid #1f2637;border-radius:14px;padding:18px}
+  label{display:block;font-size:11px;color:var(--mut);margin:10px 0 4px;text-transform:uppercase;letter-spacing:.08em}
+  input,select,textarea{width:100%;background:#0e1220;border:1px solid #232c44;color:var(--fg);border-radius:9px;padding:9px 11px;font:inherit;font-size:13px}
+  textarea{min-height:74px;resize:vertical}
+  button{margin-top:16px;width:100%;background:var(--acc);border:0;color:#fff;padding:12px;border-radius:10px;font:inherit;font-size:14px;cursor:pointer}
+  button:hover{filter:brightness(1.1)}
+  .verdict{border-radius:14px;padding:20px;font-size:15px;line-height:1.5;display:none}
+  .score{font-size:44px;font-weight:700}
+  .v-block{background:#3a1216;border:1px solid var(--bad)} .v-block .score{color:var(--bad)}
+  .v-caution{background:#3a2f12;border:1px solid var(--warn)} .v-caution .score{color:var(--warn)}
+  .v-clear{background:#123a1e;border:1px solid var(--ok)} .v-clear .score{color:var(--ok)}
+  ul.findings{margin:12px 0 0;padding-left:18px}
+  ul.findings li{margin:6px 0;font-size:13px}
+  .sev3{color:var(--bad)} .sev2{color:var(--warn)} .sev1{color:var(--mut)}
+  .samples{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+  .chip{background:#0e1220;border:1px solid #232c44;border-radius:999px;padding:6px 12px;font-size:12px;color:var(--acc);cursor:pointer}
+  .chip:hover{border-color:var(--acc)}
+  footer{color:var(--mut);font-size:11px;text-align:center;padding:26px}
+</style>
+</head>
+<body>
+<header><div class="logo"></div><h1>SignGuard <small>— scan before you sign</small></h1></header>
+<main>
+<div class="grid">
+  <div class="card">
+    <h3 style="margin:0 0 6px">Transaction under review</h3>
+    <label>Chain</label>
+    <select id="chain"><option value="1">Ethereum</option><option value="8453">Base</option><option value="10">Optimism</option><option value="42161">Arbitrum</option></select>
+    <label>From</label><input id="from" value="0x0000000000000000000000000000000000000001"/>
+    <label>To (contract)</label><input id="to"/>
+    <label>Value (wei)</label><input id="value" value="0"/>
+    <label>Calldata</label><textarea id="data" placeholder="0x…"></textarea>
+    <div class="samples">
+      <span class="chip" data-s="drainer">🪝 USDT drainer approval</span>
+      <span class="chip" data-s="nft">🖼️ BAYC setApprovalForAll</span>
+      <span class="chip" data-s="router">🦄 Uniswap router approve</span>
+      <span class="chip" data-s="transfer">💸 Normal USDT transfer</span>
+    </div>
+    <button id="scan">Scan transaction</button>
+  </div>
+  <div>
+    <div id="verdict" class="verdict"><div class="score" id="score"></div><div id="summary"></div><ul class="findings" id="findings"></ul></div>
+    <div class="card" id="idle"><h3 style="margin:0">Verdict</h3><p style="color:var(--mut);font-size:13px">Fill the transaction (or pick a sample) and press <b>Scan</b>. SignGuard fetches live on-chain context — spender code, contract age, token balance, ENS — and returns a risk score before you sign.</p></div>
+  </div>
+</div>
+<footer>SignGuard · ETHOnline 2026 · engine: TypeScript + live JSON-RPC · tracks: The Graph · Hedera x402 · Ledger · ENS</footer>
+</main>
+<script>
+const API = location.origin.startsWith("http") && location.port !== "5500" ? "" : "http://localhost:8788";
+const MAXU = "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff";
+const SAMPLES = {
+  drainer: { to:"0xdac17f958d2ee523a2206206994597c13d831ec7", data:"0x095ea7b3"+"0".repeat(24)+"63c79fccd0a21e4a4d87056a0efe3b85d8c373d4"+MAXU.slice(2), value:"0" },
+  nft:     { to:"0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d", data:"0xa22cb465"+"0".repeat(24)+"63c79fccd0a21e4a4d87056a0efe3b85d8c373d4"+"0".repeat(63)+"1", value:"0" },
+  router:  { to:"0xdac17f958d2ee523a2206206994597c13d831ec7", data:"0x095ea7b3"+"0".repeat(24)+"1111111254eeb25477b68fb85ed929f73a960582"+MAXU.slice(2), value:"0" },
+  transfer:{ to:"0xdac17f958d2ee523a2206206994597c13d831ec7", data:"0xa9059cbb"+"0".repeat(24)+"d8da6bf26964af9d7eed9e03e53415d37aa96045"+(100n*10n**6n).toString(16).padStart(64,"0"), value:"0" },
+};
+document.querySelectorAll(".chip").forEach(c=>c.onclick=()=>{
+  const s=SAMPLES[c.dataset.s];
+  document.getElementById("to").value=s.to;
+  document.getElementById("data").value=s.data;
+  document.getElementById("value").value=s.value;
+});
+document.getElementById("scan").onclick=async()=>{
+  const body={chainId:+document.getElementById("chain").value,tx:{
+    from:document.getElementById("from").value, to:document.getElementById("to").value,
+    value:document.getElementById("value").value||"0", data:document.getElementById("data").value||"0x"}};
+  const v=document.getElementById("verdict"); v.style.display="block";
+  document.getElementById("idle").style.display="none";
+  document.getElementById("score").textContent="…";
+  document.getElementById("summary").textContent="scanning live chain context";
+  document.getElementById("findings").innerHTML="";
+  try{
+    const r=await fetch(API+"/scan",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify(body)});
+    const d=await r.json();
+    v.className="verdict "+(d.score>=90?"v-block":d.score>=30?"v-caution":"v-clear");
+    document.getElementById("score").textContent=d.score>=90?"⛔ "+d.score:d.score>=30?"⚠️ "+d.score:"✅ "+d.score;
+    document.getElementById("summary").textContent=d.summary;
+    // Safe DOM construction — labels embed chain-derived strings (ENS names are arbitrary
+    // Unicode), so never innerHTML them.
+    const ul=document.getElementById("findings"); ul.innerHTML="";
+    for(const f of (d.findings||[])){
+      const li=document.createElement("li"); li.className="sev"+f.severity;
+      const b=document.createElement("b"); b.textContent=f.kind;
+      li.appendChild(b); li.appendChild(document.createTextNode(" — "+f.label));
+      ul.appendChild(li);
+    }
+    if(!(d.findings||[]).length){const li=document.createElement("li");li.textContent="no findings";ul.appendChild(li);}
+  }catch(e){ document.getElementById("score").textContent="✗"; document.getElementById("summary").textContent="service unreachable — run: npx tsx src/server.ts"; }
+};
+</script>
+</body>
+</html>

@@ -146,11 +146,10 @@ export async function contractAgeHours(rpc: Rpc, addr: Address): Promise<number 
   }
 }
 
-/** ENS forward+reverse resolution (public gateway, no key). */
+/** ENS reverse resolution (public API, no key). */
 export async function ensNames(rpc: Rpc, addr: Address): Promise<{ targetEns?: string; spenderEns?: string }> {
-  // lightweight: resolve via public ENS gateway API
   try {
-    const res = await fetch(`https://names.api.ens.eth.limo/name/${addr}`, { signal: AbortSignal.timeout(6000) });
+    const res = await fetch(`https://api.ensideas.com/ens/resolve/${addr}`, { signal: AbortSignal.timeout(6000) });
     if (!res.ok) return {};
     const j = (await res.json()) as { name?: string };
     return j.name ? { targetEns: j.name } : {};
