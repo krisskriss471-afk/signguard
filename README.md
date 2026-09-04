@@ -75,6 +75,10 @@ Scoring: `max(severity)` with medium-count pressure, capped 100. ≥90 = BLOCK.
   `payment-requirements` (USDC/Base, $0.01/scan), verification via the Blocky402
   facilitator, fail-closed. Client demo: `service/x402-client.ts` (agent discovers,
   pays, consumes).
+- **Arc (Circle)** — same endpoint speaks **Arc testnet** via `X402_NETWORK=arc`:
+  chainId 5042002 and the Circle USDC precompile `0x3600…0000` were verified live
+  against `rpc.testnet.arc.io` (`eth_chainId`, `symbol()` → "USDC"); the 402
+  payment-requirements flow was exercised end-to-end on that network.
 - **The Graph** — `src/graph.ts` pluggable risk-graph source (spender degree from
   Approval subgraphs) via `GRAPH_API_KEY` (Subgraph Studio).
 - **ENS** — reverse resolution feeds the homoglyph/look-alike rules; ENS names shown
