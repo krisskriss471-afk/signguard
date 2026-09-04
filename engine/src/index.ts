@@ -6,6 +6,7 @@ import type { Address, Hex } from "viem";
 import { getAddress } from "viem";
 import { flattenCalls, type DecodedCall } from "./decode.js";
 import { buildContext, type TxContext } from "./rpc.js";
+import { graphRisk } from "./graph.js";
 import {
   ruleUnlimitedApproval, ruleApproveToEoa, ruleApproveToUnverified,
   ruleFreshContract, ruleKnownDrainer, ruleSetApprovalForAll,
@@ -61,6 +62,17 @@ export async function scanTx(
     }
   }
   for (const f of [ruleHomoglyphEns(ctx), ruleLookalikeName(ctx)]) if (f) findings.push(f);
+  // The Graph risk signal (pluggable; no-op without GRAPH_API_KEY + subgraph id)
+  for (const s of spenders.slice(0, 3)) {
+    const g = await graphRisk(s).catch(() => undefined);
+    if (g?.spenderApprovalDegree !== undefined && g.spenderApprovalDegree >= 50) {
+      findings.push({
+        kind: "MULTICALLED_RISK", severity: 2,
+        label: `Spender ${s} already holds approvals from ${g.spenderApprovalDegree} distinct owners (approval-graph degree via The Graph)`,
+        counterparty: s,
+      });
+    }
+  }
   // composite: several mediums escalate
   const mediums = findings.filter((f) => f.severity === 2).length;
   if (mediums >= 3) findings.push({ kind: "MULTICALLED_RISK", severity: 3, label: `${mediums} independent medium-risk signals in one transaction` });
