@@ -1,0 +1,16 @@
+file 'slide-title.png'
+duration 5
+file 'shot-drainer_720.png'
+duration 22
+file 'shot-nft_720.png'
+duration 12
+file 'shot-router_720.png'
+duration 10
+file 'shot-transfer_720.png'
+duration 8
+file 'slide-x402.png'
+duration 18
+file 'slide-evidence.png'
+duration 14
+file 'slide-title.png'
+duration 4

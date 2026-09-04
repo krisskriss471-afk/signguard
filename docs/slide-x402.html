@@ -1,0 +1,18 @@
+<!doctype html><html><head><meta charset="utf-8"><style>
+body{margin:0;background:#0b0e14;color:#e6e9f0;font-family:ui-monospace,Menlo,monospace;padding:36px;font-size:15px;line-height:1.75}
+h2{color:#5b8cff;font-size:20px;margin:0 0 18px}
+.c{color:#8b93a7}.g{color:#2ecc71}.r{color:#e74c3c}.y{color:#f1c40f}.b{color:#5b8cff}
+.box{background:#141926;border:1px solid #1f2637;border-radius:12px;padding:20px 24px;margin-bottom:14px}
+</style></head><body>
+<h2>x402 — the scan is a paid service (agent pays, no API key)</h2>
+<div class="box">
+<span class="c">$</span> curl -X POST localhost:8788/x402/scan -d '{...}'<br>
+<span class="y">HTTP 402</span> · accepts: USDC/Base · 0.01 · payTo 0x7a1e…<br><br>
+<span class="c">$</span> signguard-agent --scan 0xd838ca…<br>
+discovered: 10000 USDC atoms → 0x7a1e…<br>
+EIP-3009 transferWithAuthorization signed (agent key)<br>
+<span class="g">PAID SCAN OK</span> — verdict: <span class="r">score 100 · BLOCK</span><br>
+settlement receipt: <span class="g">success</span> · tx 0x4f9c…
+</div>
+<div style="color:#8b93a7;font-size:13px">facilitator: Blocky402 · fail-closed verification · receipt returned in X-PAYMENT-RESPONSE</div>
+</body></html>

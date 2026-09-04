@@ -1,0 +1,22 @@
+<!doctype html><html><head><meta charset="utf-8"><style>
+body{margin:0;background:#0b0e14;color:#e6e9f0;font-family:ui-monospace,Menlo,monospace;padding:36px;font-size:15px;line-height:1.75}
+h2{color:#5b8cff;font-size:20px;margin:0 0 18px}
+.c{color:#8b93a7}.g{color:#2ecc71}.r{color:#e74c3c}
+.box{background:#141926;border:1px solid #1f2637;border-radius:12px;padding:20px 24px}
+</style></head><body>
+<h2>Evidence — replay of real mainnet transactions (no mocks)</h2>
+<div class="box">
+<span class="c">$</span> npx tsx scripts/build-corpus.ts<br>
+<span class="c">scanned 521 USDT approvals (live eth_getLogs)</span><br>
+<span class="c">corpus: 5 malicious, 1 benign</span><br><br>
+<span class="c">$</span> npx tsx scripts/evidence.ts<br>
+<span class="g">PASS [100] BLOCK</span> — USDT unlimited approval to EOA 0x63c79fcc…<br>
+<span class="g">PASS [100] BLOCK</span> — USDT unlimited approval to EOA 0x63c79fcc…<br>
+<span class="g">PASS [100] BLOCK</span> — USDT unlimited approval to EOA 0x63c79fcc…<br>
+<span class="g">PASS [100] BLOCK</span> — USDT unlimited approval to EOA 0x10e8aaad…<br>
+<span class="g">PASS [100] BLOCK</span> — USDT unlimited approval to EOA 0x00c95e06…<br>
+<span class="g">PASS [ 20] CLEAR</span> — USDT approval to router 0x11111112…<br><br>
+<span class="g">=== 6 PASS / 0 FAIL ===</span>
+</div>
+<div style="color:#8b93a7;font-size:13px">11 unit tests green · MIT · github.com/krisskriss471-afk/signguard</div>
+</body></html>

@@ -13,12 +13,13 @@ import { createServer } from "node:http";
 import { getAddress, type Address, type Hex } from "viem";
 import { scanTx } from "./index.js";
 import { refreshBlocklists, startBlocklistRefresh } from "./blocklists.js";
+import { pickNetwork, usdcDomain } from "./networks.js";
 
 const PORT = Number(process.env.PORT ?? 8788);
-const FACILITATOR = process.env.X402_FACILITATOR ?? "https://blocky402.com";
+const NET = pickNetwork();
+const FACILITATOR = process.env.X402_FACILITATOR ?? NET.facilitator;
 const PAY_TO = process.env.X402_PAY_TO as Address | undefined;
 const PRICE_USDC = process.env.X402_PRICE ?? "0.01"; // $0.01 per scan
-const RPC_URL = process.env.RPC_URL ?? "https://ethereum-rpc.publicnode.com";
 
 type Req = { chainId?: number; tx?: { from?: string; to?: string; value?: string; data?: string } };
 
@@ -27,19 +28,19 @@ function json(res: unknown & { writeHead(n: number, h?: Record<string, string>):
   res.end(JSON.stringify(body, (_k, v) => (typeof v === "bigint" ? v.toString() : v)));
 }
 
-/** Build x402 payment requirements (USDC on Base, per x402 v2). */
+/** Build x402 payment requirements for the active network (Base or Arc). */
 function paymentRequirements() {
   return {
     x402Version: 1,
     scheme: "exact",
-    network: "base",
+    network: NET.id,
     maxAmountRequired: String(Math.round(Number(PRICE_USDC) * 1e6)), // USDC 6dp
     resource: "POST /x402/scan",
-    description: "SignGuard pre-sign transaction risk verdict (one scan)",
+    description: `SignGuard pre-sign transaction risk verdict (one scan, ${NET.name})`,
     mimeType: "application/json",
     payTo: PAY_TO ?? "0x0000000000000000000000000000000000000000",
     maxTimeoutSeconds: 60,
-    asset: "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913", // native USDC on Base
+    asset: NET.usdc,
     extraHeaders: { "X-PAYMENT": "required" },
   };
 }

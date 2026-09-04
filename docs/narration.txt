@@ -1,0 +1,25 @@
+SignGuard. Scan before you sign.
+
+Every week, thousands of wallets lose everything to one malicious signature.
+The wallet shows gas. It shows success. It never shows what the counterparty just gained.
+
+SignGuard does. Paste a transaction — or replay a real one from mainnet — and the engine
+decodes the calldata, then fetches live on-chain context: is the spender a contract or an
+EOA? How old is it? What is your balance? Does its ENS name hide a homoglyph?
+
+Here is a real USDT approval, mined from mainnet this hour. Unlimited allowance to an EOA.
+Score: one hundred. Block. Classic drainer pattern.
+
+A blanket NFT approval to the same address: ninety-five. Block.
+
+The same unlimited approval to a canonical router? Twenty. Low. SignGuard knows the
+difference between infrastructure and a trap.
+
+The verdict is served over HTTP — and the paid endpoint speaks x402: an agent discovers
+the price, signs a USDC authorization, pays per scan, and gets the verdict. No API key,
+no subscription. That is the agentic economy, working.
+
+Six real drainer transactions replayed from live mainnet. Six caught. Zero false alarms
+on trusted routers.
+
+SignGuard. Open source. Built at ETHOnline 2026.
